@@ -28,13 +28,13 @@ const LandingSection = () => {
       type: "hireMe",
       comment: "",
     },
-    onSubmit: (values, {resetForm}) => {
-      submit("", values)
-      if (response.type == "success") {
-        resetForm({values: ""})
+    onSubmit: (values) => {
+      submit('',values).then(() => 
+      {onOpen(response.type,response.message);
+      if (response.type === "success") {
+        formik.resetForm();
       }
-      onOpen(response.type, response.message)
-    },
+    })},
     validationSchema: Yup.object({
       firstName: Yup.string()
         .required('Required'),
