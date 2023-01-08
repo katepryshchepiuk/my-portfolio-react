@@ -29,7 +29,7 @@ const LandingSection = () => {
       comment: "",
     },
     onSubmit: (values) => {
-      submit('',values).then(() => 
+      submit('', values).then(() => 
       {onOpen(response.type,response.message);
       if (response.type === "success") {
         formik.resetForm();
@@ -58,9 +58,7 @@ const LandingSection = () => {
           Contact me
         </Heading>
         <Box p={6} rounded="md" w="100%">
-          <form onSubmit={(e) => {
-              formik.handleSubmit(e)
-            }}>
+          <form onSubmit={formik.handleSubmit}>
             <VStack spacing={4}>
               <FormControl isInvalid={formik.touched.firstName && formik.errors.firstName}>
                 <FormLabel htmlFor="firstName">Name</FormLabel>
