@@ -29,12 +29,12 @@ const LandingSection = () => {
       comment: "",
     },
     onSubmit: (values) => {
-      submit('',values).then(() => 
-      {onOpen(response.type,response.message);
+      submit('', values)
+      onOpen(response.type,response.message)
       if (response.type === "success") {
         formik.resetForm();
       }
-    })},
+    },
     validationSchema: Yup.object({
       firstName: Yup.string()
         .required('Required'),
