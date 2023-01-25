@@ -29,22 +29,29 @@ const LandingSection = () => {
       comment: "",
     },
     onSubmit: (values) => {
-      submit('', values)
-      onOpen(response.type,response.message)
+      submit('https://john.com/contactme', values);
+      // onOpen(response.type,response.message)
+      // if (response.type === "success") {
+      //   formik.resetForm();
+      // }
+    },
+    validationSchema: Yup.object({
+      firstName: Yup.string().required('Required'),
+      email: Yup.string().required('Required').email('Invalid email address'),
+      comment: Yup.string()
+        .min(25, 'Must be at least 25 characters')
+        .required('Required')
+    }),
+  });
+
+  useEffect(() => {
+    if (response) {
+      onOpen(response.type, response.message);
       if (response.type === "success") {
         formik.resetForm();
       }
-    },
-    validationSchema: Yup.object({
-      firstName: Yup.string()
-        .required('Required'),
-      email: Yup.string()
-        .required('Required').email('Invalid email address'),
-      comment: Yup.string()
-        .required('Required')
-        .min(25, 'Must be at least 25 characters')
-    }),
-  });
+    }
+  }, [response])
 
   return (
     <FullScreenSection
@@ -58,11 +65,9 @@ const LandingSection = () => {
           Contact me
         </Heading>
         <Box p={6} rounded="md" w="100%">
-          <form onSubmit={(e) => {
-              formik.handleSubmit(e)
-            }}>
+          <form onSubmit={formik.handleSubmit}>
             <VStack spacing={4}>
-              <FormControl isInvalid={formik.touched.firstName && formik.errors.firstName}>
+              <FormControl isInvalid={formik.touched.firstName && !!formik.errors.firstName}>
                 <FormLabel htmlFor="firstName">Name</FormLabel>
                 <Input
                   id="firstName"
@@ -73,7 +78,7 @@ const LandingSection = () => {
                   {formik.errors.firstName}
                 </FormErrorMessage>
               </FormControl>
-              <FormControl isInvalid={formik.touched.email && formik.errors.email}>
+              <FormControl isInvalid={formik.touched.email && !!formik.errors.email}>
                 <FormLabel htmlFor="email">Email Address</FormLabel>
                 <Input
                   id="email"
@@ -95,7 +100,7 @@ const LandingSection = () => {
                   <option value="other">Other</option>
                 </Select>
               </FormControl>
-              <FormControl isInvalid={formik.touched.comment && formik.errors.comment}>
+              <FormControl isInvalid={formik.touched.comment && !!formik.errors.comment}>
                 <FormLabel htmlFor="comment">Your message</FormLabel>
                 <Textarea
                   id="comment"
@@ -107,7 +112,7 @@ const LandingSection = () => {
                   {formik.errors.comment}
                 </FormErrorMessage>
               </FormControl>
-              <Button isLoading={isLoading} type="submit" colorScheme="purple" width="full">
+              <Button type="submit" colorScheme="purple" width="full" isLoading={isLoading} >
                 Submit
               </Button>
             </VStack>

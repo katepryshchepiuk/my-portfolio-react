@@ -33,24 +33,24 @@ const socials = [
 ];
 
 const Header = () => {
-  const headerRef = useRef();
-  const [prevScrollPos, setPrevScrollPos] = useState(0);
 
-  const handleClick = (anchor) => {
-    const id = `${anchor}-section`
-    const element = document.getElementById(id)
-    element.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  }
+  const headerRef = useRef(null);
 
   useEffect(() => {
-    const handleScroll = (e) => {
-      const currentScrollPos = window.pageYOffset
-      if (currentScrollPos >= prevScrollPos || currentScrollPos === 0) {
-        headerRef.current.style.transform = 'translateY(0)'
-      } else {
-        headerRef.current.style.transform = 'translateY(-100%)'
+    let prevScrollPos = window.scrollY;
+
+    const handleScroll = () => {
+      const currentScrollPos = window.scrollY;
+      const headerElement = headerRef.current;
+      if (!headerElement) {
+        return;
       }
-      setPrevScrollPos(currentScrollPos)      
+      if (prevScrollPos > currentScrollPos) {
+        headerElement.style.transform = "translateY(0)";
+      } else {
+        headerElement.style.transform = "translateY(-200px)";
+      }
+      prevScrollPos = currentScrollPos;      
     }
 
     window.addEventListener('scroll', handleScroll)
@@ -58,7 +58,18 @@ const Header = () => {
     return () => {
       window.removeEventListener('scroll', handleScroll)
     }
-  }, [prevScrollPos])
+  }, [])
+
+  const handleClick = (anchor) => () => {
+    const id = `${anchor}-section`
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'start',
+      });
+    }
+  };
 
   return (
     <Box
@@ -66,7 +77,7 @@ const Header = () => {
       top={0}
       left={0}
       right={0}
-      translateY={200}
+      translateY={0}
       transitionProperty='transform'
       transitionDuration='0.3s'
       transitionTimingFunction='ease-in-out'
@@ -81,20 +92,26 @@ const Header = () => {
           alignItems='center'
         >
           <nav>
-            <HStack spacing={4}>
-              {socials.map((social, index) => {
-                return (
-                  <a key={index} href={social.url} target='_blank'>
-                    <FontAwesomeIcon icon={social.icon} size="1x" />
+            <HStack spacing={8}>
+              {socials.map(({icon, url}) => (
+                  <a 
+                  key={url} 
+                  href={url} 
+                  target='_blank'
+                  >
+                    <FontAwesomeIcon icon={icon} key={url} size="2x" />
                   </a>
-                )
-              })}
+                ))}
             </HStack>
           </nav>
           <nav>
             <HStack spacing={8}>
-              <a onClick={() => handleClick("projects")}>Projects</a>
-              <a onClick={() => handleClick("contactme")}>Contact Me</a>
+              <a href="#projects" onClick={handleClick("projects")}>
+                Projects
+                </a>
+              <a href="#contactme" onClick={handleClick("contactme")}>
+                Contact Me
+                </a>
               </HStack>
           </nav>
         </HStack>
